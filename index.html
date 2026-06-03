@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4 · Opening a Window to the World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F1E8;
+    --paper-2:#FBF8F2;
+    --ink:#2C2A26;
+    --ink-soft:#5A554C;
+    --terra:#C75B2C;
+    --terra-soft:#E9D3C5;
+    --teal:#2F7A66;
+    --teal-soft:#D6E6E0;
+    --line:#E3DACB;
+    --yellow:#FCE9A6;
+    --green-mark:#CDEBD9;
+    --shadow:0 1px 3px rgba(70,60,40,.08), 0 6px 22px rgba(70,60,40,.06);
+    --en:"Fraunces", Georgia, serif;
+    --ko:"Gowun Dodum","Noto Sans KR",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--ko);
+    line-height:1.7;
+    -webkit-text-size-adjust:100%;
+  }
+  .en{font-family:var(--en);}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px 60px;}
+
+  header{text-align:center;padding:30px 16px 18px;max-width:760px;margin:0 auto;}
+  .kicker{font-family:var(--ko);font-size:.82rem;letter-spacing:.12em;color:var(--teal);font-weight:700;margin-bottom:8px;}
+  header h1{font-family:var(--en);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0 0 10px;color:var(--ink);font-style:italic;}
+  .sub{font-family:var(--ko);font-size:.95rem;color:var(--ink-soft);letter-spacing:.04em;}
+
+  .tabs{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line);padding:8px 0 0;}
+  .tabs-inner{max-width:760px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 10px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .tabs-inner::-webkit-scrollbar{display:none;}
+  .tab{flex:0 0 auto;border:none;background:transparent;font-family:var(--ko);font-size:.92rem;font-weight:700;color:var(--ink-soft);padding:9px 13px;border-radius:10px 10px 0 0;cursor:pointer;white-space:nowrap;transition:.15s;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--terra);background:var(--paper-2);box-shadow:0 -2px 0 var(--terra) inset;}
+
+  .panel{display:none;padding-top:22px;}
+  .panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .panel-head{margin:4px 0 18px;}
+  .panel-head h2{font-family:var(--en);font-style:italic;font-weight:600;font-size:1.5rem;margin:0 0 4px;color:var(--terra);}
+  .panel-head p{margin:0;font-size:.9rem;color:var(--ink-soft);}
+
+  .card{background:var(--paper-2);border:1px solid var(--line);border-radius:16px;padding:18px 18px;margin:0 0 16px;box-shadow:var(--shadow);}
+  .card-title{font-family:var(--ko);font-weight:700;font-size:1.02rem;color:var(--ink);margin:0 0 12px;display:flex;align-items:center;gap:9px;}
+  .ic{width:30px;height:30px;flex:0 0 auto;border-radius:9px;display:grid;place-items:center;font-size:1rem;background:var(--terra-soft);}
+  .ic.teal{background:var(--teal-soft);}
+
+  .ko-line{font-family:var(--ko);color:var(--ink-soft);font-size:.92rem;}
+  .en-line{font-family:var(--en);font-size:1.06rem;color:var(--ink);}
+
+  mark{background:var(--yellow);color:var(--ink);padding:0 2px;border-radius:3px;}
+  mark.g{background:var(--green-mark);}
+
+  .ex{border-left:3px solid var(--terra-soft);padding:6px 0 6px 13px;margin:10px 0 0;}
+  .ex .en-line{margin:0 0 2px;}
+  .ex .ko-line{margin:0;}
+  .badge{display:inline-block;font-family:var(--ko);font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px;margin-bottom:6px;}
+  .badge.fn{background:var(--terra-soft);color:var(--terra);}
+  .badge.fm{background:var(--teal-soft);color:var(--teal);}
+
+  .dlg{margin:2px 0;}
+  .dlg .turn{display:flex;gap:9px;margin:5px 0;align-items:flex-start;}
+  .spk{flex:0 0 auto;font-family:var(--ko);font-weight:700;font-size:.78rem;background:var(--teal-soft);color:var(--teal);border-radius:7px;padding:2px 7px;min-width:26px;text-align:center;margin-top:3px;}
+  .spk.b{background:var(--terra-soft);color:var(--terra);}
+  .line-en{font-family:var(--en);font-size:1.04rem;color:var(--ink);}
+  .line-ko{font-family:var(--ko);font-size:.88rem;color:var(--ink-soft);margin-top:1px;}
+  .ko-hide .line-ko, .ko-hide .ko-tr{display:none;}
+
+  .para{margin:0 0 6px;}
+  .ptext{font-family:var(--en);font-size:1.07rem;line-height:1.75;color:var(--ink);}
+  .ko-tr{font-family:var(--ko);font-size:.9rem;color:var(--ink-soft);margin-top:6px;line-height:1.7;}
+  .reader-name{font-family:var(--en);font-weight:700;font-style:italic;color:var(--teal);font-size:1.05rem;margin:4px 0 6px;}
+
+  details.analy{margin-top:13px;border-top:1px dashed var(--line);padding-top:11px;}
+  details.analy>summary{list-style:none;cursor:pointer;font-family:var(--ko);font-weight:700;font-size:.9rem;color:var(--teal);display:flex;align-items:center;gap:6px;user-select:none;}
+  details.analy>summary::-webkit-details-marker{display:none;}
+  details.analy>summary .chev{transition:.2s;display:inline-block;color:var(--ink-soft);}
+  details.analy[open]>summary .chev{transform:rotate(90deg);}
+  .analy-body{padding:10px 2px 2px;}
+  .analy-item{margin:0 0 11px;font-size:.9rem;line-height:1.65;}
+  .analy-item:last-child{margin-bottom:0;}
+  .analy-item .pt{font-family:var(--en);font-weight:600;color:var(--ink);}
+  .analy-item .ko{font-family:var(--ko);color:var(--ink-soft);}
+  .gh{display:block;font-family:var(--ko);font-weight:700;color:var(--teal);font-size:.9rem;margin-bottom:2px;}
+  .gh .tag{font-size:.7rem;background:var(--green-mark);color:var(--teal);padding:1px 7px;border-radius:999px;margin-right:6px;vertical-align:middle;}
+
+  .toggle-bar{display:flex;justify-content:flex-end;margin:-6px 0 14px;}
+  .ko-toggle{border:1px solid var(--line);background:var(--paper-2);font-family:var(--ko);font-weight:700;font-size:.84rem;color:var(--teal);padding:7px 14px;border-radius:999px;cursor:pointer;box-shadow:var(--shadow);transition:.15s;}
+  .ko-toggle.off{color:var(--ink-soft);}
+  .ko-toggle .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--teal);margin-right:7px;vertical-align:middle;}
+  .ko-toggle.off .dot{background:var(--ink-soft);}
+
+  .mini{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin:10px 0 0;}
+  .mini h4{margin:0 0 5px;font-family:var(--ko);font-size:.92rem;color:var(--terra);font-weight:700;}
+  .mini p{margin:3px 0;font-size:.88rem;line-height:1.6;}
+  .mini .eg{font-family:var(--en);color:var(--ink);}
+  .mini .egk{font-family:var(--ko);color:var(--ink-soft);font-size:.84rem;}
+  .alt{font-family:var(--ko);font-size:.86rem;color:var(--ink-soft);margin-top:8px;}
+  .alt b{color:var(--teal);}
+  .alt .a{font-family:var(--en);color:var(--ink);}
+
+  .filter-bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+  .chip{border:1px solid var(--line);background:var(--paper-2);font-family:var(--ko);font-weight:700;font-size:.82rem;color:var(--ink-soft);padding:6px 13px;border-radius:999px;cursor:pointer;transition:.15s;}
+  .chip.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .flip-all{margin-left:auto;border:1px solid var(--terra-soft);background:var(--paper-2);font-family:var(--ko);font-weight:700;font-size:.82rem;color:var(--terra);padding:6px 13px;border-radius:999px;cursor:pointer;}
+  .deck{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;}
+  .fc{perspective:900px;height:104px;cursor:pointer;}
+  .fc-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+  .fc.flipped .fc-inner{transform:rotateY(180deg);}
+  .fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;text-align:center;box-shadow:var(--shadow);}
+  .fc-front{background:var(--paper-2);}
+  .fc-front .w{font-family:var(--en);font-weight:600;font-size:1.08rem;color:var(--ink);}
+  .fc-front .pos{font-family:var(--ko);font-size:.7rem;color:var(--ink-soft);margin-top:3px;}
+  .fc-back{background:var(--teal);color:#fff;transform:rotateY(180deg);}
+  .fc-back .m{font-family:var(--ko);font-weight:500;font-size:.94rem;}
+  .fc-hint{font-family:var(--ko);font-size:.62rem;color:var(--ink-soft);position:absolute;bottom:6px;left:0;right:0;}
+  .fc-back .fc-hint{color:rgba(255,255,255,.6);}
+
+  .quiz-top{display:flex;justify-content:space-between;align-items:center;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:16px;box-shadow:var(--shadow);}
+  .score{font-family:var(--ko);font-weight:700;color:var(--ink);}
+  .score b{color:var(--terra);font-family:var(--en);font-size:1.2rem;}
+  .reset{border:1px solid var(--terra-soft);background:var(--paper);color:var(--terra);font-family:var(--ko);font-weight:700;font-size:.82rem;padding:7px 14px;border-radius:999px;cursor:pointer;}
+  .q{margin:0 0 16px;}
+  .q .qn{font-family:var(--ko);font-weight:700;font-size:.96rem;margin-bottom:9px;color:var(--ink);}
+  .q .qn .num{color:var(--terra);font-family:var(--en);margin-right:6px;}
+  .q .qn .qen{font-family:var(--en);}
+  .opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--paper-2);font-family:var(--ko);font-size:.92rem;color:var(--ink);padding:11px 14px;border-radius:11px;margin:7px 0;cursor:pointer;transition:.12s;}
+  .opt .oen{font-family:var(--en);}
+  .opt:hover:not(.locked){border-color:var(--teal);}
+  .opt.correct{background:#E4F3EA;border-color:var(--teal);color:var(--teal);font-weight:700;}
+  .opt.wrong{background:#F7E2DA;border-color:var(--terra);color:var(--terra);font-weight:700;}
+  .opt.locked{cursor:default;}
+  .mk{float:right;font-weight:700;}
+  .expl{display:none;margin-top:8px;font-family:var(--ko);font-size:.86rem;background:var(--paper);border-left:3px solid var(--teal);padding:9px 12px;border-radius:0 9px 9px 0;color:var(--ink-soft);line-height:1.6;}
+  .expl.show{display:block;}
+  .expl .en{font-family:var(--en);color:var(--ink);}
+
+  footer{text-align:center;padding:34px 16px 26px;color:var(--ink-soft);font-family:var(--ko);font-size:.86rem;letter-spacing:.05em;border-top:1px solid var(--line);max-width:760px;margin:30px auto 0;}
+  footer .mark{color:var(--terra);font-weight:700;}
+
+  @media(max-width:480px){
+    header h1{font-size:1.55rem;}
+    .deck{grid-template-columns:1fr 1fr;}
+    .ptext,.line-en{font-size:1rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">중3 천재(이재영) · Lesson 4</div>
+  <h1>Opening a Window to the World</h1>
+  <div class="sub">— 에듀케레 영수학원 —</div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner" id="tabs">
+    <button class="tab active" data-tab="goals">학습 목표</button>
+    <button class="tab" data-tab="dialogue">대화문</button>
+    <button class="tab" data-tab="reading">본문</button>
+    <button class="tab" data-tab="grammar">표현·문법</button>
+    <button class="tab" data-tab="words">단어장</button>
+    <button class="tab" data-tab="quiz">확인문제</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ============ TAB 1 : STUDY POINTS ============ -->
+  <section class="panel active" id="goals">
+    <div class="panel-head">
+      <h2>Study Points</h2>
+      <p>이 단원에서 꼭 익혀야 할 의사소통 기능 2가지와 목표 어법 2가지예요.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">💬</span>의사소통 기능 · 궁금한 점 표현하기</div>
+      <span class="badge fn">Function 1</span>
+      <div class="dlg">
+        <div class="turn"><span class="spk b">A</span><div><div class="line-en"><mark>I wonder if</mark> there's a bank around here.</div><div class="line-ko">이 근처에 은행이 있는지 궁금하네요.</div></div></div>
+        <div class="turn"><span class="spk">B</span><div><div class="line-en">I'm sorry, but we don't have one near here.</div><div class="line-ko">미안하지만 이 근처에는 없어요.</div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">💬</span>의사소통 기능 · 도움 제안하기</div>
+      <span class="badge fn">Function 2</span>
+      <div class="dlg">
+        <div class="turn"><span class="spk b">A</span><div><div class="line-en"><mark>Do you want me to</mark> play baduk with you?</div><div class="line-ko">제가 함께 바둑을 두길 원하세요?</div></div></div>
+        <div class="turn"><span class="spk">B</span><div><div class="line-en">That'd be great. Thank you.</div><div class="line-ko">그러면 좋겠구나. 고맙구나.</div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic teal">📐</span>언어 형식 · 관계부사</div>
+      <span class="badge fm">Form 1</span>
+      <div class="ex">
+        <div class="en-line">Friday evening is the time <mark>when</mark> my family likes to go for a walk.</div>
+        <div class="ko-line">금요일 저녁은 우리 가족이 산책하기를 좋아하는 시간이다.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic teal">📐</span>언어 형식 · 접속사 if와 whether</div>
+      <span class="badge fm">Form 2</span>
+      <div class="ex">
+        <div class="en-line">I wonder <mark>if</mark> they are angry.</div>
+        <div class="ko-line">나는 그들이 화났는지 궁금하다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2 : DIALOGUE ============ -->
+  <section class="panel" id="dialogue">
+    <div class="panel-head">
+      <h2>All the Dialogue</h2>
+      <p>교과서 Listen &amp; Speak의 모든 대화예요. 각 카드 아래 <b>📝 문장분석</b>을 펼쳐 핵심 구문을 확인하세요.</p>
+    </div>
+
+    <div class="toggle-bar">
+      <button class="ko-toggle" data-scope="dialogue"><span class="dot"></span>한글 보기 ON</button>
+    </div>
+
+    <div id="dialogue-body">
+
+      <div class="card">
+        <div class="card-title"><span class="ic teal">🎧</span>Listen · Get Ready</div>
+        <div class="dlg">
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en"><mark>I wonder if</mark> spiders are insects, too.</div><div class="line-ko">나는 거미도 곤충인지 궁금해.</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en"><mark>Do you want me to</mark> ask Mr. Spider?</div><div class="line-ko">내가 거미 씨에게 물어봐 줄까?</div></div></div>
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en">Umm, you don't have to do that.</div><div class="line-ko">음, 그러지 않아도 돼.</div></div></div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>궁금한 점 표현하기</span><span class="pt">I wonder if ~</span> <span class="ko">— '나는 ~인지 아닌지 궁금하다'.</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>도움 제안하기</span><span class="pt">Do you want me to ~?</span> <span class="ko">— '내가 ~하길 원하니?'.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ic">🗣️</span>Dialog 1</div>
+        <div class="dlg">
+          <div class="turn"><span class="spk">M</span><div><div class="line-en">Welcome to the Tourist Information Office! <mark class="g">How may I help you?</mark></div><div class="line-ko">관광 안내소에 오신 것을 환영합니다! 무엇을 도와드릴까요?</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Hi, <mark>I wonder if</mark> there's a tourist map of the town.</div><div class="line-ko">안녕하세요, 저는 마을 관광 지도가 있는지 궁금합니다.</div></div></div>
+          <div class="turn"><span class="spk">M</span><div><div class="line-en">Sure. Is there a special place <mark class="g">you're looking for</mark>?</div><div class="line-ko">물론이죠. 특별히 찾으시는 곳이 있나요?</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Yes. <mark class="g">I'd like to</mark> try some local food.</div><div class="line-ko">네. 이 지역 음식을 먹어 보고 싶어요.</div></div></div>
+          <div class="turn"><span class="spk">M</span><div><div class="line-en">Then go to Jeongseon Market. It opens every five days, and it's open today.</div><div class="line-ko">그렇다면 정선시장에 가 보세요. 시장이 5일마다 열리는데, 오늘 열렸네요.</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">I'm so lucky. <mark class="g">How can I get there?</mark></div><div class="line-ko">제가 정말 운이 좋군요. 그곳에 어떻게 가나요?</div></div></div>
+          <div class="turn"><span class="spk">M</span><div><div class="line-en">You can walk there. It takes about 10 minutes.</div><div class="line-ko">거기까지 걸어갈 수 있어요. 10분 정도 걸려요.</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Great. Will you mark the way on the map, please?</div><div class="line-ko">잘됐군요. 지도에 길을 표시해 주시겠어요?</div></div></div>
+          <div class="turn"><span class="spk">M</span><div><div class="line-en">Sure. Try gondrebap <mark class="g">when</mark> you get there.</div><div class="line-ko">물론이죠. 거기에 가면 곤드레밥을 드셔 보세요.</div></div></div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>도움 제안하기</span><span class="pt">How may I help you?</span> <span class="ko">— 상점·공공기관에서 도움을 제안하는 표현. '무엇을 도와드릴까요?'.</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>궁금한 점 표현하기</span><span class="pt">I wonder if ~</span> <span class="ko">— '나는 ~인지 아닌지 궁금하다'.</span></div>
+            <div class="analy-item"><span class="pt">목적격 관계대명사의 생략</span> <span class="ko">: a special place 뒤에 that/which 생략. you're looking for가 선행사를 수식.</span></div>
+            <div class="analy-item"><span class="pt">I'd like to ~</span> <span class="ko">: ~하고 싶다 (= I want to ~). 뒤에 동사원형.</span></div>
+            <div class="analy-item"><span class="pt">How can I get there?</span> <span class="ko">: 거기에 어떻게 가나요? (= Do you know how to go there? / Can you tell me the way to there?)</span></div>
+            <div class="analy-item"><span class="pt">접속사 when + S V</span> <span class="ko">: ~할 때.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ic">🗣️</span>Dialog 2</div>
+        <div class="dlg">
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Can I have the bill, please?</div><div class="line-ko">계산서 좀 주시겠어요?</div></div></div>
+          <div class="turn"><span class="spk">M</span><div><div class="line-en"><mark class="g">Here you are.</mark> Did you enjoy the meal?</div><div class="line-ko">여기 있습니다. 식사는 맛있게 하셨나요?</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">It was great. I liked the gondrebap very much.</div><div class="line-ko">아주 훌륭했어요. 저는 곤드레밥이 정말 좋았어요.</div></div></div>
+          <div class="turn"><span class="spk">M</span><div><div class="line-en">Thanks. It's also good for your health.</div><div class="line-ko">고맙습니다. 그것은 건강에도 좋답니다.</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Oh, really?</div><div class="line-ko">오, 정말이요?</div></div></div>
+          <div class="turn"><span class="spk">M</span><div><div class="line-en">Yes. Gondre is <mark class="g">rich in</mark> vitamins A and C. It also digests well.</div><div class="line-ko">네. 곤드레는 비타민 A와 C가 풍부합니다. 그리고 소화도 잘돼요.</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Good. <mark>I wonder if</mark> I could buy some gondre here.</div><div class="line-ko">그렇군요. 여기서 곤드레를 좀 살 수 있을까요?</div></div></div>
+          <div class="turn"><span class="spk">M</span><div><div class="line-en">Sure. <mark>Do you want me to</mark> give you the recipe for gondrebap?</div><div class="line-ko">물론이죠. 제가 곤드레밥 조리법을 드릴까요?</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Yes, that'd be great.</div><div class="line-ko">네, 그러면 정말 좋겠어요.</div></div></div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="pt">Here you are.</span> <span class="ko">: 여기 있어요. 물건을 건넬 때 (= Here it is.)</span></div>
+            <div class="analy-item"><span class="pt">rich in</span> <span class="ko">: ~이 풍부한.</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>궁금한 점 표현하기</span><span class="pt">I wonder if ~</span> <span class="ko">— if는 명사절을 이끄는 접속사로 뒤에 완전한 절이 온다.</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>도움 제안하기</span><span class="pt">Do you want me to ~?</span> <span class="ko">— '내가 ~해주기를 원하십니까?'. 뒤에 동사원형. give는 간접목적어(you) + 직접목적어(the recipe ~)를 취한다.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ic">🗣️</span>Listen More</div>
+        <div class="dlg">
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Excuse me. <mark class="g">Can you help me with</mark> this milk?</div><div class="line-ko">미안하지만, 이 우유 (사는 것) 좀 도와주겠니?</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">Sure. What is it?</div><div class="line-ko">그럼요. 뭔데요?</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Read me the date, please.</div><div class="line-ko">날짜를 좀 읽어 주렴.</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">Oh, <mark>do you want me to</mark> tell you the best-before date?</div><div class="line-ko">아, 제가 유통 기한을 말씀드리길 원하세요?</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Yes, I forgot my glasses.</div><div class="line-ko">그래, 내가 안경을 두고 왔단다.</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">Let me see. You should drink it <mark class="g">by</mark> June 7.</div><div class="line-ko">잠깐만요. 6월 7일까지 드셔야 해요.</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">That's too soon. <mark>I wonder if</mark> there's <mark class="g">one</mark> <mark class="g">that</mark> lasts longer.</div><div class="line-ko">그건 너무 짧네. 기한이 더 긴 게 있는지 궁금하구나.</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">Wait. (Pause) I found one. This one is good <mark class="g">until</mark> June 11.</div><div class="line-ko">잠깐만요. 하나 찾았어요. 이것은 6월 11일까지 드실 수 있어요.</div></div></div>
+          <div class="turn"><span class="spk b">W</span><div><div class="line-en">Oh, I'll take that one. Thank you very much.</div><div class="line-ko">오, 그걸로 사야겠다. 정말 고맙구나.</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">You're welcome.</div><div class="line-ko">천만에요.</div></div></div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="pt">Can you help me with ~?</span> <span class="ko">: ~을 도와줄 수 있니? (더 공손히: Would you mind helping me with ~?)</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>도움 제안하기</span><span class="pt">Do you want me to ~?</span> <span class="ko">— tell은 간접목적어(you) + 직접목적어(the best-before date). best-before date = 유통 기한.</span></div>
+            <div class="analy-item"><span class="pt">전치사 by vs until</span> <span class="ko">: by는 특정 시점에 완료(우유를 6월 7일까지 다 마셔야 함), until은 그 시점까지 동작이 계속될 때.</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>궁금한 점 표현하기</span><span class="pt">I wonder if ~</span> <span class="ko">— if 대신 whether도 가능.</span></div>
+            <div class="analy-item"><span class="pt">부정대명사 one</span> <span class="ko">: 모두 milk를 가리킨다. / <span class="en">주격 관계대명사 that</span> : 선행사 one을 수식, 단수라 동사도 lasts.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ic">🎤</span>Speak · I Wonder If There's a Bank</div>
+        <div class="dlg">
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en">Excuse me. <mark>I wonder if</mark> there's a bank around here.</div><div class="line-ko">실례합니다. 이 근처에 은행이 있는지 궁금합니다.</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">I'm sorry, but we don't have one near here.</div><div class="line-ko">미안하지만 이 근처에는 없어요.</div></div></div>
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en">That's all right. Thanks.</div><div class="line-ko">괜찮아요. 고맙습니다.</div></div></div>
+        </div>
+        <div class="ko-line" style="margin-top:12px;font-weight:700;color:var(--teal);">예시 대화</div>
+        <div class="dlg">
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en">Excuse me. I wonder where the nearest supermarket is.</div><div class="line-ko">실례합니다. 가장 가까운 슈퍼마켓이 어디에 있는지 궁금합니다.</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">There's a supermarket next to the bike shop.</div><div class="line-ko">자전거 가게 옆에 슈퍼마켓이 있어요.</div></div></div>
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en">Excuse me. I wonder where I can fix my bike.</div><div class="line-ko">실례합니다. 제 자전거를 어디에서 수리할 수 있는지 궁금합니다.</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">There's a bike shop next to the restaurant. You can fix it there.</div><div class="line-ko">식당 옆에 자전거 가게가 있습니다. 거기에서 수리할 수 있어요.</div></div></div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>궁금한 점 표현하기</span><span class="pt">I wonder if ~ / I wonder where ~</span> <span class="ko">— '나는 ~인지 궁금하다'. if 대신 whether 가능, 뒤에 완전한 절.</span></div>
+            <div class="analy-item"><span class="ko">대체 표현: </span><span class="pt">I'm curious about ~ / I want to know ~ / I'd be interested to know ~ / Can someone tell me about ~?</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ic">🎤</span>Speak · Do You Want Me to Play Baduk with You?</div>
+        <div class="dlg">
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en">What's wrong, Grandpa?</div><div class="line-ko">무슨 일이세요, 할아버지?</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">I'm bored.</div><div class="line-ko">지루하구나.</div></div></div>
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en"><mark>Do you want me to</mark> play baduk with you?</div><div class="line-ko">제가 함께 바둑을 두길 원하세요?</div></div></div>
+          <div class="turn"><span class="spk">B</span><div><div class="line-en">That'd be great. Thank you.</div><div class="line-ko">그러면 좋겠구나. 고맙구나.</div></div></div>
+        </div>
+        <div class="ko-line" style="margin-top:12px;font-weight:700;color:var(--teal);">예시 대화</div>
+        <div class="dlg">
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en">What's wrong, Mom? — Do you want me to get you some water?</div><div class="line-ko">무슨 일이세요, 엄마? — 제가 물을 좀 가져다드리길 원하세요?</div></div></div>
+          <div class="turn"><span class="spk b">A</span><div><div class="line-en">What's wrong, Max? — Do you want me to give you some food?</div><div class="line-ko">무슨 일이니, Max? — 내가 음식을 좀 주길 원하니?</div></div></div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="gh"><span class="tag">의사소통</span>도움 제안하기</span><span class="pt">Do you want me to ~?</span> <span class="ko">— 상대방에게 도움을 제안하는 표현. '내가 ~하길 바라니?'.</span></div>
+            <div class="analy-item"><span class="ko">대체 표현: </span><span class="pt">Let me help you. / Can I give a hand? / Can I help you? / What can I do for you? / Do you need my help?</span></div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ TAB 3 : READING ============ -->
+  <section class="panel" id="reading">
+    <div class="panel-head">
+      <h2>Reading · Must-Visit Markets Around the World</h2>
+      <p>단락마다 <b>📝 N단락 문장분석</b>을 펼쳐 구문 해설을 확인하세요.</p>
+    </div>
+
+    <div class="toggle-bar">
+      <button class="ko-toggle" data-scope="reading"><span class="dot"></span>한글 보기 ON</button>
+    </div>
+
+    <div id="reading-body">
+
+      <div class="card">
+        <div class="reader-name">본문 1 · Leah's Travel Story</div>
+        <div class="para">
+          <p class="ptext">I am Leah. I <mark class="g">have been writing</mark> a travel blog <mark class="g">since</mark> I was 18. I <mark class="g">go</mark> places and <mark class="g">share</mark> my experiences with my readers. <mark class="g">Visiting</mark> markets is a good way <mark class="g">to learn</mark> about the culture of a country. Markets are places <mark>where</mark> you can meet people, learn history, and taste local food. I wonder <mark>whether</mark> there is any better way <mark class="g">to discover</mark> another culture.</p>
+          <div class="ko-tr">저는 Leah입니다. 18세 때부터 여행 블로그를 써 왔습니다. 저는 여기저기 다니며 제 경험을 독자들과 공유하고 있습니다. 시장 방문은 한 나라의 문화에 대해 배우는 좋은 방법입니다. 시장은 사람들을 만나고, 역사를 배우고, 또 지역 음식을 맛볼 수 있는 장소입니다. 다른 문화를 발견하는 데에 더 좋은 방법이 있을지 모르겠습니다.</div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 1단락 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="pt">현재완료진행형 + since</span> <span class="ko">: have been writing은 과거부터 현재까지 계속해 옴. since(~한 이후로)와 함께 '18살 이후로 블로그를 계속 써 옴'.</span></div>
+            <div class="analy-item"><span class="pt">병렬구조</span> <span class="ko">: go ~ + and + share ~. share A with B = 'A를 B와 공유하다'.</span></div>
+            <div class="analy-item"><span class="pt">동명사 Visiting</span> <span class="ko">: 주어로 쓰인 동명사라 동사는 단수 is. To visit로도 가능.</span></div>
+            <div class="analy-item"><span class="pt">to부정사의 형용사적 용법</span> <span class="ko">: to learn이 앞의 명사 a good way를 수식.</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">목표어법</span>관계부사 where</span><span class="pt">Markets are places where you can meet people ~</span> <span class="ko">— 장소 선행사 places를 수식하는 완전한 절을 이끔. = in which. 또한 meet, learn, taste가 'A, B, and C' 병렬구조.</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">목표어법</span>접속사 if/whether</span><span class="pt">I wonder whether there is ~</span> <span class="ko">— wonder의 목적어절 '~인지 아닌지'. whether = if, 뒤에 완전한 절. to discover는 형용사적 용법(any better way 수식).</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="reader-name">본문 2 · Grand Bazaar, Turkey</div>
+        <div class="para">
+          <p class="ptext">Turkey is a country <mark>where</mark> East meets West, so it has a long tradition of trade. It is a natural place for large markets <mark class="g">like</mark> the Grand Bazaar. The market <mark class="g">was built</mark> in 1455 in Istanbul. <mark class="g">Back then</mark>, the market had two big buildings, and people traded goods like cloth and gold there. Today the Grand Bazaar is <mark class="g">much</mark> bigger, and it is <mark class="g">the largest</mark> covered market in the world. It has 64 streets and more than 4,000 shops under one roof. The market attracts over 250,000 visitors every day. You can buy almost <mark class="g">any</mark> imaginable item there.</p>
+          <div class="ko-tr">터키는 동양과 서양이 만나는 나라이고, 그래서 오랜 교역의 전통을 가지고 있습니다. 터키는 Grand Bazaar 같은 대형 시장이 생겨나기에 자연스러운 곳입니다. Grand Bazaar는 1455년 이스탄불에 지어졌습니다. 그 당시에, 이 시장에는 큰 건물이 두 개 있었고, 거기서 사람들은 직물이나 금 같은 물건을 교환했답니다. 오늘날 Grand Bazaar는 훨씬 크고, 세계에서 가장 큰 지붕이 덮인 시장입니다. 64개의 거리와 4,000개 이상의 상점이 한 지붕 아래에 있습니다. 그 시장은 매일 25만 명 이상의 방문객을 불러 모읍니다. 그곳에서는 상상할 수 있는 거의 모든 물건을 살 수 있습니다.</div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 2단락 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="gh"><span class="tag">목표어법</span>관계부사 where</span><span class="pt">a country where East meets West</span> <span class="ko">— 장소 선행사 a country를 수식하는 완전한 절. = in which.</span></div>
+            <div class="analy-item"><span class="pt">전치사 like</span> <span class="ko">: ~와 같은, ~처럼.</span></div>
+            <div class="analy-item"><span class="pt">수동태 was built</span> <span class="ko">: 과거형 수동태(was/were + p.p.). 과거에 시장이 '지어졌다'. / <span class="en">Back then</span> = 그 당시에.</span></div>
+            <div class="analy-item"><span class="pt">비교급 강조 much</span> <span class="ko">: bigger를 강조해 '훨씬'. (= even, still, a lot, far)</span></div>
+            <div class="analy-item"><span class="pt">형용사 최상급 the largest</span> <span class="ko">: 형용사 최상급 앞에는 반드시 the.</span></div>
+            <div class="analy-item"><span class="pt">any</span> <span class="ko">: 단수명사(item)와 함께 '어느, 어떤'. any imaginable item = '상상할 수 있는 어떤 물건'.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="reader-name">본문 2 · Extra Tip</div>
+        <div class="para">
+          <p class="ptext">Ask shop owners <mark>if</mark> they carry nazar boncuğu, <mark class="g">a traditional Turkish symbol for good luck</mark>. Also, <mark class="g">if</mark> you want a nice snack, <mark class="g">make sure to</mark> try lokum, a traditional Turkish candy.</p>
+          <div class="ko-tr">가게 주인에게 행운을 기원하는 터키 전통 상징인 'nazar boncuğu(나자르 본주)'를 파는지 물어보세요. 또한, 만약 맛있는 간식을 원한다면, 터키 전통 사탕인 'lokum(로쿰)'을 꼭 드셔 보세요.</div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 Extra Tip 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="gh"><span class="tag">목표어법</span>접속사 if/whether (명사절)</span><span class="pt">Ask + 목적어 + if</span> <span class="ko">— '~에게 …인지 물어보다'. 명사절 '~인지 아닌지'. if = whether. carry는 '(가게에서) 취급하다'.</span></div>
+            <div class="analy-item"><span class="pt">동격의 콤마</span> <span class="ko">: nazar boncuğu = a traditional Turkish symbol ~ / lokum = a traditional Turkish candy.</span></div>
+            <div class="analy-item"><span class="pt">접속사 if (부사절)</span> <span class="ko">: 만약 ~한다면. 여기서는 조건의 의미.</span></div>
+            <div class="analy-item"><span class="pt">make sure to + 동사원형</span> <span class="ko">: 꼭 ~하다, ~을 확실히 하다.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="reader-name">본문 3 · Damnoen Saduak Floating Market, Thailand</div>
+        <div class="para">
+          <p class="ptext">In the past, Thai people traded goods on rivers. This was the beginning of floating markets in Thailand. <mark class="g">With</mark> better road transportation, many floating markets disappeared. Since the late 1960s, however, some of them <mark class="g">have come</mark> back and kept the tradition alive. Today, <mark class="g">one of the most popular</mark> floating markets is Damnoen Saduak Floating Market. It is always <mark class="g">crowded with</mark> tourists from all over the world. You can buy local foods and traditional gift items directly from boats.</p>
+          <div class="ko-tr">과거에 태국 사람들은 강에서 물건을 교환했습니다. 이것이 태국 수상 시장의 시작이었습니다. 도로 교통이 개선되면서, 많은 수상 시장이 사라졌습니다. 그러나 1960년대 후반부터 일부가 다시 생겨나 전통을 이어 가고 있습니다. 오늘날, 가장 인기 있는 수상 시장 중 하나는 Damnoen Saduak 수상 시장입니다. 그곳은 전 세계에서 온 관광객들로 항상 붐빕니다. 배에서 직접 현지 음식과 전통 선물을 살 수 있습니다.</div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 3단락 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="pt">floating market</span> <span class="ko">: 수상 시장.</span></div>
+            <div class="analy-item"><span class="pt">전치사 with</span> <span class="ko">: ~함에 따라, ~와 더불어. With better road transportation = '더 나은 도로 교통과 함께'.</span></div>
+            <div class="analy-item"><span class="pt">현재완료 &lt;계속&gt;</span> <span class="ko">: have come은 현재까지 진행됨. since(~이후로)와 자주 쓰임. have come과 (have) kept가 병렬. keep ~ alive = '~을 존속시키다'.</span></div>
+            <div class="analy-item"><span class="pt">one of the + 최상급 + 복수명사</span> <span class="ko">: 가장 ~한 것들 중 하나. 주어 자리에 오면 동사는 단수(is).</span></div>
+            <div class="analy-item"><span class="pt">빈도부사 always</span> <span class="ko">: be동사·조동사 뒤, 일반동사 앞. 여기서는 is 뒤. / <span class="en">crowded with</span> = ~로 붐비는. <span class="en">all over the world</span> = 전 세계에.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="reader-name">본문 3 · Extra Tip</div>
+        <div class="para">
+          <p class="ptext">I wonder <mark>if</mark> you have ever <mark class="g">had</mark> a meal on water. <mark class="g">If</mark> not, try noodles like pad thai. The sellers will <mark class="g">cook</mark> them on their boats and <mark class="g">pass</mark> them to you with a long fishing pole.</p>
+          <div class="ko-tr">여러분이 물 위에서 식사해 본 적이 있는지 궁금하네요. 만약 그렇지 않으면, 'pad thai(팟 타이)' 같은 면 요리를 드셔 보세요. 상인들이 배에서 음식을 만들어 긴 낚싯대로 건네줄 겁니다.</div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 Extra Tip 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="gh"><span class="tag">목표어법</span>접속사 if/whether (명사절)</span><span class="pt">I wonder if you have ever had ~</span> <span class="ko">— wonder의 목적어절 '~인지 아닌지'. if = whether.</span></div>
+            <div class="analy-item"><span class="pt">현재완료 &lt;경험&gt;</span> <span class="ko">: have had = '먹어 본 적이 있다'. have는 '먹다'.</span></div>
+            <div class="analy-item"><span class="pt">접속사 if (부사절)</span> <span class="ko">: 만약 ~한다면. If not = If you have not had a meal on water.</span></div>
+            <div class="analy-item"><span class="pt">병렬구조</span> <span class="ko">: will cook ~ + and + (will) pass ~. them은 모두 noodles like pad thai. / fishing pole = 낚싯대.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="reader-name">본문 4 · Aalsmeer Flower Market, The Netherlands</div>
+        <div class="para">
+          <p class="ptext">The Netherlands means "low lands." <mark class="g">As</mark> the name suggests, about a third of the country sits below sea level. Thus, the Dutch built up the land, and one effective way <mark class="g">to use</mark> it was <mark class="g">to grow</mark> flowers and sell them. It is, therefore, <mark class="g">no surprise that</mark> the country has the largest flower market in the world: the Aalsmeer Flower Market. The building <mark>where</mark> the market <mark class="g">is housed</mark> is bigger than 120 soccer fields. The market <mark class="g">is busy with</mark> thousands of flower-filled carts. They <mark class="g">are moved</mark> mostly by electric-powered trucks. Every day, around 20 million flowers <mark class="g">are traded</mark> and shipped to all corners of the world.</p>
+          <div class="ko-tr">네덜란드는 '저지대'라는 뜻입니다. 이름에서 알 수 있는 것처럼, 이 나라의 약 3분의 1이 해수면보다 낮습니다. 그래서 네덜란드 사람들은 땅을 지어 올렸고, 그것을 사용하는 효과적인 방법은 꽃을 재배하고 파는 것이었습니다. 그러므로 네덜란드에 세계에서 가장 큰 꽃 시장인 Aalsmeer 꽃 시장이 있다는 것은 놀라운 일이 아닙니다. 시장이 들어선 건물은 축구장 120개보다 큽니다. 시장은 꽃이 가득 든 수천 개의 수레로 분주합니다. 수레는 대부분 전동 트럭에 의해 움직입니다. 매일, 약 2천만 송이의 꽃이 거래되어 세계 각지로 운송됩니다.</div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 4단락 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="pt">접속사 As</span> <span class="ko">: ~처럼. As the name suggests = '이름에서 알 수 있듯이'.</span></div>
+            <div class="analy-item"><span class="pt">to부정사의 형용사적 용법</span> <span class="ko">: to use it이 앞의 명사 one effective way를 수식. (주어 one effective way → 동사 was)</span></div>
+            <div class="analy-item"><span class="pt">to부정사의 명사적 용법</span> <span class="ko">: to grow와 (to) sell은 주격 보어. '~하는 것'. 동명사(growing, selling)로도 가능.</span></div>
+            <div class="analy-item"><span class="pt">It is no surprise that S V</span> <span class="ko">: ~하는 것은 놀라운 일이 아니다.</span></div>
+            <div class="analy-item"><span class="gh"><span class="tag">목표어법</span>관계부사 where</span><span class="pt">The building where the market is housed ~</span> <span class="ko">— 장소 선행사 The building을 수식. = in which. 선행사가 문장의 주어, 동사는 is. is housed는 수동태(house = 거처를 제공하다).</span></div>
+            <div class="analy-item"><span class="pt">be busy with</span> <span class="ko">: ~으로 바쁘다.</span></div>
+            <div class="analy-item"><span class="pt">수동태 be moved by</span> <span class="ko">: ~에 의해 움직이다. 주어 They(=Carts)가 전동 트럭에 의해 움직여짐.</span></div>
+            <div class="analy-item"><span class="pt">병렬구조</span> <span class="ko">: are traded + and + (are) shipped ~. 수동태 두 개. be traded = 거래되다, be shipped = 운송되다.</span></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="reader-name">본문 4 · Extra Tip</div>
+        <div class="para">
+          <p class="ptext">You may wonder <mark>whether</mark> you can buy just a few flowers at the market. Sadly, you cannot, but you can see <mark class="g">how</mark> wholesale flower trading works.</p>
+          <div class="ko-tr">시장에서 꽃을 조금 살 수 있는지 궁금할 겁니다. 애석하게도 안 되지만, 꽃이 도매로 어떻게 거래되는지를 볼 수 있습니다.</div>
+        </div>
+        <details class="analy">
+          <summary><span class="chev">▸</span>📝 Extra Tip 문장분석</summary>
+          <div class="analy-body">
+            <div class="analy-item"><span class="gh"><span class="tag">목표어법</span>접속사 if/whether (명사절)</span><span class="pt">wonder whether you can buy ~</span> <span class="ko">— '~인지 아닌지'. whether = if, 뒤에 완전한 절.</span></div>
+            <div class="analy-item"><span class="pt">간접의문문</span> <span class="ko">: see의 목적어로 'how + 주어 + 동사'(how wholesale flower trading works). 의문사 + 주어 + 동사 어순.</span></div>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ TAB 4 : GRAMMAR / EXPRESSIONS ============ -->
+  <section class="panel" id="grammar">
+    <div class="panel-head">
+      <h2>표현 &amp; 문법</h2>
+      <p>의사소통 표현 2종 · 목표 문법 2종 · 시험에 자주 나오는 어법 보충 카드</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">💬</span>의사소통 표현 1 · 궁금한 점 표현하기</div>
+      <div class="ex">
+        <div class="en-line"><mark>I wonder if ~.</mark></div>
+        <div class="ko-line">'나는 ~인지 아닌지 궁금하다'. if 대신 whether를 쓸 수 있고, 뒤에는 완전한 절이 온다.</div>
+      </div>
+      <div class="alt">
+        <b>대체 표현</b><br>
+        · <span class="a">I'm curious about ~.</span> '나는 ~이 궁금하다'<br>
+        · <span class="a">I want/would like to know ~.</span> '나는 ~을 알고 싶다'<br>
+        · <span class="a">I'd be (very) interested to know ~.</span> '나는 ~을 알고 싶다'<br>
+        · <span class="a">Can someone tell me about ~?</span> '~에 대해 말해줄 사람 있나요?'
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">💬</span>의사소통 표현 2 · 도움 제안하기</div>
+      <div class="ex">
+        <div class="en-line"><mark>Do you want me to ~?</mark></div>
+        <div class="ko-line">'내가 ~하길 바라니?' — 상대방에게 도움을 제안하는 표현. 뒤에는 동사원형이 온다. 대답은 보통 <span class="en">That'd be great.</span> 등.</div>
+      </div>
+      <div class="alt">
+        <b>대체 표현</b><br>
+        · <span class="a">Let me help you.</span> / <span class="a">Can I give a hand?</span><br>
+        · <span class="a">Can/May I help you?</span> / <span class="a">How may I help you?</span><br>
+        · <span class="a">What can I do for you?</span> / <span class="a">Do you need my help?</span><br>
+        · <span class="a">Are you having trouble with anything?</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic teal">📐</span>목표 문법 1 · 관계부사</div>
+      <div class="ko-line">시간·장소·이유 등을 나타내는 명사(선행사) 뒤에 <b>완전한 절</b>이 붙어 명사를 꾸며 준다. 관계부사는 그 절에서 「접속사 + 부사」 역할을 하며, '전치사 + 관계대명사'로 바꿔 쓸 수 있다.</div>
+      <div class="ex">
+        <div class="en-line">Friday evening is the time <mark>when</mark> my family likes to go for a walk.</div>
+        <div class="ko-line">금요일 저녁은 우리 가족이 산책하기를 좋아하는 시간이다.</div>
+      </div>
+      <div class="mini">
+        <h4>선행사별 관계부사</h4>
+        <p class="eg">시간(the time, the day) → when (= at/on/in which)</p>
+        <p class="eg">장소(the place) → where (= in/on/at which)</p>
+        <p class="eg">이유(the reason) → why (= for which)</p>
+        <p class="eg">방법(the way) → how (= in which) <span class="egk">※ the way와 how는 함께 쓰지 않고 둘 중 하나만 쓴다.</span></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic teal">📐</span>목표 문법 2 · 접속사 if / whether</div>
+      <div class="ko-line">if가 <b>명사절</b>로 쓰이면 '~인지 아닌지'의 뜻이며, 주로 동사의 목적어 자리에 온다. 접속사 whether로 바꿔 쓸 수 있다.</div>
+      <div class="ex">
+        <div class="en-line">We don't know <mark>if</mark> it will rain tomorrow. (= <mark>whether</mark>)</div>
+        <div class="ko-line">우리는 내일 비가 올지 안 올지 모른다.</div>
+      </div>
+      <div class="mini">
+        <h4>cf) if가 조건 부사절을 이끌면</h4>
+        <p class="eg">We will go swimming if the weather is nice tomorrow.</p>
+        <p class="egk">'~라면'의 뜻. if절에서는 주절이 미래여도 현재시제가 미래를 대신한다(is, not will be).</p>
+      </div>
+    </div>
+
+    <div class="panel-head" style="margin-top:26px;">
+      <h2 style="font-size:1.2rem;">시험 빈출 어법 보충</h2>
+      <p>본문·구문 UP에 나온 핵심 어법들이에요.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">🔎</span>동명사 (주어·목적어·보어)</div>
+      <div class="ko-line">동사 + -ing로 명사처럼 쓰며, 동사 성격이 남아 목적어를 가질 수 있다.</div>
+      <div class="mini"><p class="eg">&lt;주어&gt; Taking a walk is good exercise.</p>
+      <p class="eg">&lt;목적어&gt; She enjoys having coffee. / I'm interested in cooking Chinese food.</p>
+      <p class="eg">&lt;보어&gt; My hobby is playing badminton.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">🔎</span>to부정사의 형용사적 · 명사적 용법</div>
+      <div class="mini"><h4>형용사적 용법 — 앞의 명사 수식 ('~하는, ~할')</h4>
+      <p class="eg">I have no friends to help me.</p>
+      <p class="eg">I'm looking for a chair to sit on. <span class="egk">— 전치사 on을 빠뜨리지 않도록 주의.</span></p></div>
+      <div class="mini"><h4>명사적 용법 — 주어·보어·목적어 ('~하는 것')</h4>
+      <p class="eg">&lt;주어&gt; To lose weight is not easy.</p>
+      <p class="eg">&lt;보어&gt; Our dream is to travel in Africa.</p>
+      <p class="eg">&lt;목적어&gt; She chose to stay home.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">🔎</span>수동태</div>
+      <div class="ko-line">주어가 동작을 '당하는' 것. 「주어 + be동사 + 과거분사(p.p.) + by + 행위자」. 행위자가 일반적이면 「by + 행위자」는 생략.</div>
+      <div class="mini"><p class="eg">He wrote the letter. → The letter was written by him.</p>
+      <p class="eg">I was invited to the party by Sarah. <span class="egk">— 나는 Sarah에 의해 파티에 초대되었다.</span></p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">🔎</span>비교급 강조 (much / a lot / many)</div>
+      <div class="mini"><p class="eg">형용사 비교급: much, far, by far, even, still, a lot으로 강조.</p>
+      <p class="eg">Inho is much taller than David.</p>
+      <p class="eg">셀 수 있는 명사 비교급(more people 등)은 much가 아니라 many로 강조 — There were many more people than I expected.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">🔎</span>동격의 콤마 (,)</div>
+      <div class="ko-line">어떤 말 뒤에 그것을 보충 설명하는 말을 콤마로 덧붙이는 것.</div>
+      <div class="mini"><p class="eg">La Tomatina, the tomato festival of Spain, is held on the last Wednesday of August.</p>
+      <p class="egk">cf) 동격으로 사람 이름이 올 때는 콤마를 쓰지 않는다 — My boyfriend Jiho likes to play the guitar.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">🔎</span>현재완료 (경험·계속·완료·결과)</div>
+      <div class="mini"><p class="eg">경험: I have been to the US before.</p>
+      <p class="eg">계속: I have lived in this city since elementary school.</p>
+      <p class="eg">완료: I have just finished my homework. <span class="egk">(just, yet, already)</span></p>
+      <p class="eg">결과: I have lost the key. <span class="egk">(현재 갖고 있지 않다)</span></p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ic">🔎</span>병렬 구조 &amp; 간접의문문</div>
+      <div class="mini"><h4>병렬 구조</h4>
+      <p class="eg">and/but/or로 연결되는 어구는 같은 형태·구조를 가진다.</p>
+      <p class="eg">Mary is smart, pretty, and fashionable. / I went to school and worked hard.</p></div>
+      <div class="mini"><h4>간접의문문</h4>
+      <p class="eg">의문사 있을 때: I know who he is. <span class="egk">(의문사 + 주어 + 동사)</span></p>
+      <p class="eg">의문사 없을 때: I am not sure if/whether he is a teacher. <span class="egk">(if/whether + 주어 + 동사)</span></p></div>
+    </div>
+
+  </section>
+
+  <!-- ============ TAB 5 : VOCABULARY ============ -->
+  <section class="panel" id="words">
+    <div class="panel-head">
+      <h2>단어장</h2>
+      <p>카드를 탭하면 뒤집혀 뜻이 나와요. 대화문 / 본문 필터와 전체 뒤집기를 사용하세요.</p>
+    </div>
+    <div class="filter-bar">
+      <button class="chip active" data-filter="all">전체</button>
+      <button class="chip" data-filter="dlg">대화문</button>
+      <button class="chip" data-filter="read">본문</button>
+      <button class="flip-all" id="flipAll">전체 뒤집기 ↺</button>
+    </div>
+    <div class="deck" id="deck"></div>
+  </section>
+
+  <!-- ============ TAB 6 : QUIZ ============ -->
+  <section class="panel" id="quiz">
+    <div class="panel-head">
+      <h2>확인문제</h2>
+      <p>목표 어법·표현·단어·내용이해 10문항. 보기를 누르면 정답과 해설이 바로 나와요.</p>
+    </div>
+    <div class="quiz-top">
+      <div class="score">점수 <b id="score">0</b> / 10</div>
+      <button class="reset" id="resetQuiz">다시 풀기 ↻</button>
+    </div>
+    <div id="quizBody"></div>
+  </section>
+
+</div>
+
+<footer>
+  <span class="mark">에듀케레 바른교육연구소</span>
+</footer>
+
+<script>
+/* ---------- TAB SWITCHING ---------- */
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  panels.forEach(p=>p.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.tab).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+/* ---------- KOREAN TOGGLE ---------- */
+document.querySelectorAll('.ko-toggle').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const scope = document.getElementById(btn.dataset.scope+'-body');
+    const off = scope.classList.toggle('ko-hide');
+    btn.classList.toggle('off', off);
+    btn.innerHTML = '<span class="dot"></span>한글 보기 ' + (off?'OFF':'ON');
+  });
+});
+
+/* ---------- VOCABULARY ---------- */
+const vocab = [
+  // 대화문 단어
+  {w:'wonder', pos:'동', m:'궁금해하다', c:'dlg'},
+  {w:'insect', pos:'명', m:'곤충', c:'dlg'},
+  {w:'tourist information office', pos:'', m:'관광 안내소', c:'dlg'},
+  {w:'local food', pos:'', m:'지역 음식', c:'dlg'},
+  {w:'mark', pos:'동', m:'표시하다', c:'dlg'},
+  {w:'bill', pos:'명', m:'계산서', c:'dlg'},
+  {w:'meal', pos:'명', m:'식사', c:'dlg'},
+  {w:'rich in', pos:'', m:'~이 풍부한', c:'dlg'},
+  {w:'digest', pos:'동', m:'소화하다', c:'dlg'},
+  {w:'recipe', pos:'명', m:'조리법', c:'dlg'},
+  {w:'best-before date', pos:'', m:'유통 기한', c:'dlg'},
+  {w:'last', pos:'동', m:'지속되다', c:'dlg'},
+  {w:'appointment', pos:'명', m:'약속', c:'dlg'},
+  {w:'bored', pos:'형', m:'지루한', c:'dlg'},
+  {w:'by (전치사)', pos:'', m:'~까지 (완료 시점)', c:'dlg'},
+  {w:'until', pos:'', m:'~까지 (계속)', c:'dlg'},
+  // 본문 단어
+  {w:'experience', pos:'명/동', m:'경험 (하다)', c:'read'},
+  {w:'share', pos:'동', m:'공유하다, 나누다', c:'read'},
+  {w:'culture', pos:'명', m:'문화', c:'read'},
+  {w:'discover', pos:'동', m:'발견하다', c:'read'},
+  {w:'tradition', pos:'명', m:'전통', c:'read'},
+  {w:'trade', pos:'명/동', m:'교역, 거래(하다)', c:'read'},
+  {w:'build (built)', pos:'동', m:'짓다', c:'read'},
+  {w:'goods', pos:'명', m:'물건, 상품', c:'read'},
+  {w:'cloth', pos:'명', m:'직물, 천', c:'read'},
+  {w:'covered market', pos:'', m:'지붕이 덮인 시장', c:'read'},
+  {w:'attract', pos:'동', m:'끌어들이다', c:'read'},
+  {w:'imaginable', pos:'형', m:'상상할 수 있는', c:'read'},
+  {w:'carry', pos:'동', m:'(가게에서) 취급하다', c:'read'},
+  {w:'symbol', pos:'명', m:'상징', c:'read'},
+  {w:'floating market', pos:'', m:'수상 시장', c:'read'},
+  {w:'transportation', pos:'명', m:'교통, 운송', c:'read'},
+  {w:'disappear', pos:'동', m:'사라지다', c:'read'},
+  {w:'crowded with', pos:'', m:'~로 붐비는', c:'read'},
+  {w:'all over the world', pos:'', m:'전 세계에', c:'read'},
+  {w:'below sea level', pos:'', m:'해수면보다 낮은', c:'read'},
+  {w:'effective', pos:'형', m:'효과적인', c:'read'},
+  {w:'grow', pos:'동', m:'재배하다, 기르다', c:'read'},
+  {w:'house', pos:'동', m:'거처를 제공하다', c:'read'},
+  {w:'be busy with', pos:'', m:'~으로 바쁘다', c:'read'},
+  {w:'ship', pos:'동', m:'운송하다', c:'read'},
+  {w:'wholesale', pos:'명/형', m:'도매(의)', c:'read'},
+  {w:'traditional', pos:'형', m:'전통적인', c:'read'},
+  {w:'natural', pos:'형', m:'자연의, 자연스러운', c:'read'},
+  {w:'attractive', pos:'형', m:'매력적인', c:'read'},
+  {w:'local', pos:'형', m:'지역의', c:'read'},
+  {w:'floating', pos:'형', m:'(물에) 떠 있는', c:'read'}
+];
+const deck = document.getElementById('deck');
+function renderDeck(filter){
+  deck.innerHTML='';
+  vocab.filter(v=>filter==='all'||v.c===filter).forEach(v=>{
+    const card=document.createElement('div');
+    card.className='fc';
+    card.innerHTML=`<div class="fc-inner">
+      <div class="fc-face fc-front"><div class="w">${v.w}</div>${v.pos?`<div class="pos">${v.pos}</div>`:''}<div class="fc-hint">탭하면 뜻 보기</div></div>
+      <div class="fc-face fc-back"><div class="m">${v.m}</div><div class="fc-hint">탭하면 단어 보기</div></div>
+    </div>`;
+    card.addEventListener('click',()=>card.classList.toggle('flipped'));
+    deck.appendChild(card);
+  });
+}
+renderDeck('all');
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active');
+  renderDeck(c.dataset.filter);
+}));
+let allFlipped=false;
+document.getElementById('flipAll').addEventListener('click',()=>{
+  allFlipped=!allFlipped;
+  document.querySelectorAll('.fc').forEach(f=>f.classList.toggle('flipped',allFlipped));
+});
+
+/* ---------- QUIZ ---------- */
+const quiz=[
+  {q:'빈칸에 알맞은 관계부사는? Markets are places ___ you can meet people.',
+   opts:['where','when','why','which'],a:0,
+   e:'장소를 나타내는 선행사 places 뒤에는 관계부사 where가 와야 한다. (= in which)'},
+  {q:'빈칸에 알맞은 것은? I wonder ___ there is a better way. (명사절)',
+   opts:['if','that','because','when'],a:0,
+   e:'wonder의 목적어절로 "~인지 아닌지"를 나타내는 if(= whether)가 와야 한다.'},
+  {q:'궁금한 점을 나타낼 때 쓰는 표현은?',
+   opts:['I wonder if there\'s a bank around here.','Do you want me to help you?','That\'d be great.','You\'re welcome.'],a:0,
+   e:'I wonder if ~는 "~인지 궁금하다"로 궁금한 점을 표현. Do you want me to ~?는 도움 제안 표현이다.'},
+  {q:'도움을 제안할 때 쓰는 표현은?',
+   opts:['Do you want me to play baduk with you?','I wonder if it is open.','I\'m curious about it.','How can I get there?'],a:0,
+   e:'Do you want me to ~?는 "내가 ~하길 바라니?"로 도움을 제안하는 표현이다.'},
+  {q:'밑줄 친 단어의 뜻이 알맞은 것은? Visiting markets is a good way to discover another culture.',
+   opts:['discover = 발견하다','discover = 자르다','discover = 운송하다','discover = 붐비다'],a:0,
+   e:'discover는 "발견하다". 시장 방문이 다른 문화를 발견하는 좋은 방법이라는 내용이다.'},
+  {q:'Grand Bazaar(터키)에 대한 설명으로 알맞은 것은?',
+   opts:['1455년에 건물 두 개로 시작했다','강 위에 떠 있는 시장이다','꽃을 도매로 거래한다','1960년대에 사라졌다'],a:0,
+   e:'Grand Bazaar는 1455년 이스탄불에 지어졌고, 그 당시 큰 건물이 두 개 있었다. 수상 시장=태국, 꽃 도매=네덜란드.'},
+  {q:'Damnoen Saduak 시장(태국)의 특징은?',
+   opts:['배에서 직접 현지 음식과 선물을 살 수 있다','세계에서 가장 큰 지붕 덮인 시장이다','축구장 120개보다 크다','1455년에 지어졌다'],a:0,
+   e:'담는사두악은 수상 시장으로, 전 세계 관광객으로 붐비며 배에서 직접 현지 음식과 전통 선물을 살 수 있다.'},
+  {q:'Aalsmeer 꽃 시장(네덜란드)에 대한 설명으로 알맞은 것은?',
+   opts:['매일 약 2천만 송이의 꽃이 거래된다','상상할 수 있는 모든 물건을 판다','곤드레밥으로 유명하다','5일마다 열린다'],a:0,
+   e:'알스메이르 꽃 시장은 세계에서 가장 큰 꽃 시장으로, 매일 약 2천만 송이의 꽃이 거래·운송된다.'},
+  {q:'빈칸에 알맞은 것은? Penguin Snack is the place ___ students like to go.',
+   opts:['where','which','what','whose'],a:0,
+   e:'뒤에 완전한 절(students like to go)이 오고 선행사가 장소(the place)이므로 관계부사 where가 와야 한다.'},
+  {q:'Leah가 시장 방문을 추천하는 이유는?',
+   opts:['다른 문화를 발견하는 좋은 방법이기 때문','꽃이 저렴하기 때문','음식이 무료이기 때문','관광객이 적기 때문'],a:0,
+   e:'Leah는 시장이 사람들을 만나고 역사를 배우고 현지 음식을 맛볼 수 있는, 다른 문화를 발견하는 좋은 방법이라고 추천한다.'}
+];
+const quizBody=document.getElementById('quizBody');
+let answered=[];
+function renderQuiz(){
+  quizBody.innerHTML='';
+  answered=new Array(quiz.length).fill(false);
+  document.getElementById('score').textContent='0';
+  quiz.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.className='q';
+    let opts='';
+    item.opts.forEach((o,j)=>{opts+=`<button class="opt" data-q="${i}" data-o="${j}"><span class="oen">${o}</span></button>`;});
+    div.innerHTML=`<div class="qn"><span class="num">Q${i+1}.</span>${item.q}</div>${opts}<div class="expl" id="expl-${i}">${item.e}</div>`;
+    quizBody.appendChild(div);
+  });
+  document.querySelectorAll('.opt').forEach(btn=>btn.addEventListener('click',onAnswer));
+}
+function onAnswer(e){
+  const btn=e.currentTarget;
+  const qi=+btn.dataset.q, oi=+btn.dataset.o;
+  if(answered[qi])return;
+  answered[qi]=true;
+  const correct=quiz[qi].a;
+  const opts=quizBody.querySelectorAll(`.opt[data-q="${qi}"]`);
+  opts.forEach(o=>{
+    o.classList.add('locked');
+    const j=+o.dataset.o;
+    if(j===correct){o.classList.add('correct');o.innerHTML+=' <span class="mk">✓</span>';}
+    if(j===oi && oi!==correct){o.classList.add('wrong');o.innerHTML+=' <span class="mk">✕</span>';}
+  });
+  document.getElementById('expl-'+qi).classList.add('show');
+  if(oi===correct){
+    const s=document.getElementById('score');
+    s.textContent=(+s.textContent)+1;
+  }
+}
+document.getElementById('resetQuiz').addEventListener('click',()=>{renderQuiz();window.scrollTo({top:0,behavior:'smooth'});});
+renderQuiz();
+</script>
+
+</body>
+</html>
